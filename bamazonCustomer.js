@@ -28,6 +28,11 @@ const connection = sql.createConnection({
       }
 
     ]).then((re)=>{
+      connection.query(`SELECT ${re.item} FROM products`, function (error, results, fields) {
+        if (error) throw error;
+        console.log('The solution is: ', results[0]);
+      });
 
     });
   }
+  promptSearch();
