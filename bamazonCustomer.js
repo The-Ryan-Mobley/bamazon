@@ -5,16 +5,17 @@ const sql = require('mysql');
 
 var connection = sql.createConnection({
     host     : 'localhost',
-    user     : 'me',
-    password : process.env.SQL_PW,
-    database : 'bamazon'
+    user     : 'root',
+    port     : 3306,
+    password : process.env.SQL_PW.toString(),
+    database : 'bamazon',
   });
    
   connection.connect();
    
-  connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+  connection.query('SELECT * FROM products', function (error, results, fields) {
     if (error) throw error;
-    console.log('The solution is: ', results[0].solution);
+    console.log('The solution is: ', results[0]);
   });
    
   connection.end();
