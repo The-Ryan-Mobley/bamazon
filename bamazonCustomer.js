@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 const sql = require('mysql');
 
 
-var connection = sql.createConnection({
+const connection = sql.createConnection({
     host     : 'localhost',
     user     : 'root',
     port     : 3306,
@@ -19,3 +19,15 @@ var connection = sql.createConnection({
   });
    
   connection.end();
+  function promptSearch(){
+    inquirer.prompt([
+      {
+        type:'input',
+        message:'what do you want to buy?',
+        name:'item'
+      }
+
+    ]).then((re)=>{
+
+    });
+  }
