@@ -36,7 +36,6 @@ const connection = sql.createConnection({
       let query =re.item.toString();
       connection.query(`SELECT product_name, price FROM products WHERE product_name LIKE '%${query}%'`, function (error, results, fields) {
         if (error) throw error;
-        //console.log(results);
         results.forEach((index)=>{
           console.log(index);
 
@@ -48,6 +47,12 @@ const connection = sql.createConnection({
       connection.end();
     })
   }
+  function Purchase(){
+    //needs to UPDATE database
+    connection.query(`UPDATE quantity `)
+  }
+
+
   welcomeList();
 
   
