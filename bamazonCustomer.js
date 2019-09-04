@@ -17,8 +17,7 @@ const connection = sql.createConnection({
     if (error) throw error;
     console.log('The solution is: ', results[0]);
   });
-   
-  connection.end();
+ 
   function promptSearch(){
     inquirer.prompt([
       {
@@ -28,11 +27,17 @@ const connection = sql.createConnection({
       }
 
     ]).then((re)=>{
-      connection.query(`SELECT ${re.item} FROM products`, function (error, results, fields) {
+      connection.connect();
+      connection.query(`SELECT * FROM products WHERE product_name`, function (error, results, fields) {
         if (error) throw error;
-        console.log('The solution is: ', results[0]);
+        console.log(results);
+        // results.forEach((index)=>{
+
+        // });
       });
 
     });
   }
   promptSearch();
+
+  
