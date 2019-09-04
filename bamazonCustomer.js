@@ -13,11 +13,17 @@ const connection = sql.createConnection({
    
   connection.connect();
    
-  // connection.query('SELECT * FROM products', function (error, results, fields) {
-  //   if (error) throw error;
-  //   console.log('The solution is: ', results[0]);
-  // });
- 
+
+  function welcomeList(){
+    connection.query('SELECT * FROM products', function (error, results, fields) {
+        if (error) throw error;
+        console.log('PRODUCTS LIST: \n');
+        results.forEach((index)=>{
+          console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price}`);
+        });
+        promptSearch();
+      });
+  }
   function promptSearch(){
     inquirer.prompt([
       {
@@ -42,6 +48,6 @@ const connection = sql.createConnection({
       connection.end();
     })
   }
-  promptSearch();
+  welcomeList();
 
   

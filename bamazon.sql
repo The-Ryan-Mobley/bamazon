@@ -35,3 +35,6 @@ VALUES ("Pool for Fools", "books", 9.99, 208);
 
 INSERT INTO products (product_name, department_name, price, stock_qty)
 VALUES ("HAM 90KX Turbo Edition", "Electronics", 199.99, 999);
+
+INSERT INTO products (product_name, department_name, price, stock_qty)
+VALUES ("Benny Luce Collectors Ed", "Electronics", 42.69, 1);
