@@ -13,10 +13,10 @@ const connection = sql.createConnection({
    
   connection.connect();
    
-  connection.query('SELECT * FROM products', function (error, results, fields) {
-    if (error) throw error;
-    console.log('The solution is: ', results[0]);
-  });
+  // connection.query('SELECT * FROM products', function (error, results, fields) {
+  //   if (error) throw error;
+  //   console.log('The solution is: ', results[0]);
+  // });
  
   function promptSearch(){
     inquirer.prompt([
@@ -27,16 +27,20 @@ const connection = sql.createConnection({
       }
 
     ]).then((re)=>{
-      connection.connect();
-      connection.query(`SELECT * FROM products WHERE product_name`, function (error, results, fields) {
+      let query =re.item.toString();
+      connection.query(`SELECT product_name, price FROM products WHERE product_name LIKE '%${query}%'`, function (error, results, fields) {
         if (error) throw error;
-        console.log(results);
-        // results.forEach((index)=>{
+        //console.log(results);
+        results.forEach((index)=>{
+          console.log(index);
 
-        // });
+        });
+       
       });
 
-    });
+    }).then(()=>{
+      connection.end();
+    })
   }
   promptSearch();
 
