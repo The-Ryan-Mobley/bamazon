@@ -40,7 +40,7 @@ const connection = sql.createConnection({
           console.log(index);
 
         });
-        buyPrompt(results[0]);
+        buyPrompt(results);
        
       });
 
@@ -64,13 +64,13 @@ const connection = sql.createConnection({
     });
   }
 
-  function Purchase(JSONResponse){
+  function Purchase(JSONResponse){ //log the varibles out
     //needs to UPDATE database //take value from initial search query and mod it based on that
     let minus = JSONResponse.quantity--;
-    let sqlUpdate = `UPDATE products SET quantity = ${minus} WHERE product_name = ${JSONResponse.product_name}`;
+    let sqlUpdate = `UPDATE products SET quantity = quantity + 1 WHERE id = ${JSONResponse.id}`;
     connection.query(sqlUpdate,(err,results)=>{
       if(err) throw err;
-      console.log('we made it');
+      console.log('oh yeah its all coming together');
 
     });
   }
