@@ -46,9 +46,10 @@ const connection = sql.createConnection({
        
       });
 
-    }).then(()=>{
-      connection.end();
-    })
+    });
+    //.then(()=>{
+    //  connection.end();
+    //})
   }
   function buyPrompt(reID){
     inquirer.prompt([
@@ -73,7 +74,7 @@ const connection = sql.createConnection({
     let itemObj = JSON.parse(prodID);
     //needs to UPDATE database //take value from initial search query and mod it based on that
     console.log(itemObj.id);
-    connection.query(`UPDATE products SET stock_qty = 'stock_qty - 1' WHERE id ='${itemObj.id.parseInt()}'`,(err,results)=>{
+    connection.query(`UPDATE products SET stock_qty = stock_qty - 1 WHERE id =${itemObj.id}`,(err,results)=>{
       if(err) throw err;
       console.log('oh yeah its all coming together'+results);
 
