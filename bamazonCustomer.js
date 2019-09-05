@@ -40,6 +40,7 @@ const connection = sql.createConnection({
           console.log(index);
 
         });
+        buyPrompt(results[0]);
        
       });
 
@@ -47,9 +48,31 @@ const connection = sql.createConnection({
       connection.end();
     })
   }
-  function Purchase(){
-    //needs to UPDATE database
-    connection.query(`UPDATE quantity `)
+  function buyPrompt(JSONResponse){
+    inquirer.prompt([
+      {
+        type:'confirm',
+        message:'YOU BUY?',
+        name:'num'
+      }
+    ]).then((re)=>{
+      if(re.num === true){
+        Purchase(JSONResponse);
+
+      }
+
+    });
+  }
+
+  function Purchase(JSONResponse){
+    //needs to UPDATE database //take value from initial search query and mod it based on that
+    let minus = JSONResponse.quantity--;
+    let sqlUpdate = `UPDATE products SET quantity = ${minus} WHERE product_name = ${JSONResponse.product_name}`;
+    connection.query(sqlUpdate,(err,results)=>{
+      if(err) throw err;
+      console.log('we made it');
+
+    });
   }
 
 
