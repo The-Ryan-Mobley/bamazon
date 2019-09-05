@@ -15,7 +15,7 @@ const connection = sql.createConnection({
    
 
   function welcomeList(){
-    connection.query('SELECT * FROM products', function (error, results, fields) {
+    connection.query('SELECT * FROM products', (error, results)=> {
         if (error) throw error;
         console.log('PRODUCTS LIST: \n');
         results.forEach((index)=>{
@@ -34,13 +34,15 @@ const connection = sql.createConnection({
 
     ]).then((re)=>{
       let query =re.item.toString();
-      connection.query(`SELECT product_name, price FROM products WHERE product_name LIKE '%${query}%'`, function (error, results, fields) {
+      connection.query(`SELECT id, product_name, price FROM products WHERE product_name LIKE '%${query}%'`, (error, results)=> {
         if (error) throw error;
+        console.log(results);
         results.forEach((index)=>{
           console.log(index);
 
         });
-        buyPrompt(results);
+        let resdata = JSON.stringify(results[0]);
+        buyPrompt(resdata);
        
       });
 
@@ -48,29 +50,32 @@ const connection = sql.createConnection({
       connection.end();
     })
   }
-  function buyPrompt(JSONResponse){
+  function buyPrompt(reID){
     inquirer.prompt([
       {
         type:'confirm',
-        message:'YOU BUY?',
+        message:'BUY?',
         name:'num'
       }
     ]).then((re)=>{
       if(re.num === true){
-        Purchase(JSONResponse);
+        
+        console.log(reID);
+        Purchase(reID);
+        
 
       }
 
     });
   }
 
-  function Purchase(JSONResponse){ //log the varibles out
+  function Purchase(prodID){ //log the varibles out
+    let itemObj = JSON.parse(prodID);
     //needs to UPDATE database //take value from initial search query and mod it based on that
-    let minus = JSONResponse.quantity--;
-    let sqlUpdate = `UPDATE products SET quantity = quantity + 1 WHERE id = ${JSONResponse.id}`;
-    connection.query(sqlUpdate,(err,results)=>{
+    console.log(itemObj.id);
+    connection.query(`UPDATE products SET stock_qty = 'stock_qty - 1' WHERE id ='${itemObj.id.parseInt()}'`,(err,results)=>{
       if(err) throw err;
-      console.log('oh yeah its all coming together');
+      console.log('oh yeah its all coming together'+results);
 
     });
   }
