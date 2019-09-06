@@ -19,28 +19,27 @@ const connection = sql.createConnection({
     connection.query('SELECT * FROM products', (error, results)=> {
         if (error) throw error;
         console.log('PRODUCTS LIST: \n');
-        let productArr = [];
+
         results.forEach((index)=>{
           console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price}`);
-          productArr.push(index.product_name);
+          
         });
-        console.log(productArr);
+        
         //pass products into pormpt search so you can use the list to purchase items
-        promptSearch(productArr);
+        promptSearch();
       });
   }
-  function promptSearch(arr){
+  function promptSearch(){
     inquirer.prompt([
       {
-        type:'list',
-        message:'what do you want to buy?',
-        choices: arr,
+        type:'numeric',
+        message:'enter the id of the item you want to buy',
         name:'item'
       }
 
     ]).then((re)=>{
-      let DBquery =`%${re.item.toString()}%`;
-      connection.query(`SELECT id, product_name, price FROM products WHERE product_name LIKE ?`,DBquery, (error, results)=> {
+      let DBquery =re.item;
+      connection.query(`SELECT id, product_name, price FROM products WHERE id = ?`,DBquery, (error, results)=> {
         if (error) throw error;
         console.log(results);
         results.forEach((index)=>{
@@ -75,6 +74,8 @@ const connection = sql.createConnection({
         Purchase(reID,re.num);
         
 
+      }else{
+        promptSearch();
       }
 
     });
