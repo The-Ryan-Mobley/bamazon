@@ -12,24 +12,28 @@ const connection = sql.createConnection({
   });
    
   connection.connect();
+
    
 
   function welcomeList(){
     connection.query('SELECT * FROM products', (error, results)=> {
         if (error) throw error;
         console.log('PRODUCTS LIST: \n');
+        let productArr = [];
         results.forEach((index)=>{
           console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price}`);
+          productArr.push(index.product_name);
         });
-        promptSearch();
+        //pass products into pormpt search so you can use the list to purchase items
+        promptSearch(productArr);
       });
   }
-  function promptSearch(){
+  function promptSearch(arr){
     inquirer.prompt([
       {
-        type:'input',
+        type:'list',
         message:'what do you want to buy?',
-        name:'item'
+        choices:arr
       }
 
     ]).then((re)=>{
@@ -76,12 +80,13 @@ const connection = sql.createConnection({
     console.log(itemObj.id);
     connection.query(`UPDATE products SET stock_qty = stock_qty - 1 WHERE id =${itemObj.id}`,(err,results)=>{
       if(err) throw err;
-      console.log('oh yeah its all coming together'+results);
+      console.log('oh yeah its all coming together' + results);
+      connection.end();
+
 
     });
   }
+  f
 
 
   welcomeList();
-
-  
