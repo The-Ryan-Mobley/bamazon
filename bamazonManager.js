@@ -14,3 +14,27 @@ const connection = sql.createConnection({
   });
 
   connection.connect();
+
+  function viewCatalogue(){
+    connection.query(`SELECT * FROM products`,(err,re)=>{
+      re.forEach((index)=>{
+        console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price} \n
+        DEPARTMENT: ${index.department_name} IN-STOCK: ${index.stock_qty}`);
+        
+      });
+      //prompt actions
+    })
+  }
+  function viewLows(){
+    connection.query(`SELECT * FROM products WHERE qty < 100`,(er,re)=>{
+      re.forEach((index)=>{
+        console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price} \n
+        DEPARTMENT: ${index.department_name} IN-STOCK: ${index.stock_qty}`);
+        
+      });
+    });
+    //prompt actions like restock or discontinue the item
+  }
+  function AddProducts(){
+    
+  }
