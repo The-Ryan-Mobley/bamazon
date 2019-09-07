@@ -12,6 +12,25 @@ const connection = sql.createConnection({
   });
    
   connection.connect();
+  function opening(){
+    console.log('Welcome to Bamazon!');
+    inquirer.prompt([
+      {
+        type:'list',
+        message: 'What do you want to do?',
+        choices:['Browse Inventory','Quit'],
+        name:'choice'
+      }
+    ]).then((re)=>{
+      if(re.choice === 'Browse Inventory'){
+        welcomeList();
+      }else{
+        quitOp();
+      }
+
+    });
+
+  }
 
    
 
@@ -93,7 +112,11 @@ const connection = sql.createConnection({
 
     });
   }
+  function quitOp(){
+    console.log('goodbye!');
+    connection.end();
+  }
 
 
 
-  welcomeList();
+opening();
