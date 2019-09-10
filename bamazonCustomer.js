@@ -58,15 +58,17 @@ const connection = sql.createConnection({
 
     ]).then((re)=>{
       let DBquery =re.item;
-      connection.query(`SELECT id, product_name, price FROM products WHERE id = ?`,DBquery, (error, results)=> {
+      connection.query(`SELECT id, product_name, price, department_name FROM products WHERE id = ?`,DBquery, (error, results)=> {
         if (error) throw error;
         console.log(results);
         results.forEach((index)=>{
           console.log(index);
 
         });
-        let resdata = JSON.stringify(results[0]);
-        buyPrompt(resdata);
+        let resId = JSON.stringify(results[0]);
+        let resPrice = JSON.stringify(results[2]);
+        let resDep = JSON.stringify(results[3]);
+        buyPrompt(resId,resPrice,resDep);
        
       });
 
@@ -75,7 +77,7 @@ const connection = sql.createConnection({
     //  connection.end();
     //})
   }
-  function buyPrompt(reID){
+  function buyPrompt(reID,rePrice,reDep){
     inquirer.prompt([
       {
         type:'confirm',
@@ -90,7 +92,7 @@ const connection = sql.createConnection({
     ]).then((re)=>{
       if(re.boo === true){
         console.log(reID);
-        Purchase(reID,re.num);
+        Purchase(reID,reDep,re.num,rePrice);
         
 
       }else{
@@ -100,15 +102,25 @@ const connection = sql.createConnection({
     });
   }
  
-  function Purchase(prodID,numeric){ //log the varibles out
+  function Purchase(prodID,prodDep,prodPrice,numeric){ //log the varibles out
     let itemObj = JSON.parse(prodID);
     //needs to UPDATE database //take value from initial search query and mod it based on that
     console.log(itemObj.id);
     connection.query(`UPDATE products SET stock_qty = stock_qty - ? WHERE id =?`,[numeric,itemObj.id],(err,results)=>{
       if(err) throw err;
       console.log('oh yeah its all coming together' + JSON.stringify(results));
+      updateSales(prodDep,prodPrice,numeric);
       connection.end();
 
+
+    });
+  }
+  function updateSales(dept,cost,qty){
+    let combinedTotal = cost * qty;
+
+    let sqlString = `UPDATE departments SET product_sales = product_Sales + ? WHERE department_name = ?`;
+    connection.query(sqlString,[combinedTotal,dept],(er,up)=>{
+      if(err) throw err;
 
     });
   }
