@@ -17,10 +17,14 @@ const connection = sql.createConnection({
 
   function viewCatalogue(){
     connection.query(`SELECT * FROM products`,(err,re)=>{
+      if(err) throw er;
+      let displayTable = [];
       re.forEach((index)=>{
-        console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price} \n
-        DEPARTMENT: ${index.department_name} IN-STOCK: ${index.stock_qty}`);
+        let block = {PRODUCT_ID: index.id,PRODUCT_NAME: index.product_name, PRICE: index.price, 
+          DEPARTMENT: index.department_name, IN_STOCK: index.stock_qty};
+        displayTable.push(block);
       });
+      console.table(displayTable);
       catalogueMenu();
     })
   }
@@ -56,19 +60,24 @@ const connection = sql.createConnection({
         }
         default:{
           catalogueMenu();
+          break;
         }
       }
     })
   } 
   function viewLows(){
-    connection.query(`SELECT * FROM products WHERE qty < 100`,(er,re)=>{
+    connection.query(`SELECT * FROM products WHERE stock_qty < 100`,(er,re)=>{
+      if(er) throw er;
+      let displayTable = [];
       re.forEach((index)=>{
-        console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price} \n
-        DEPARTMENT: ${index.department_name} IN-STOCK: ${index.stock_qty}`);   
+        let block = {PRODUCT_ID: index.id,PRODUCT_NAME: index.product_name, PRICE: index.price, 
+          DEPARTMENT: index.department_name, IN_STOCK: index.stock_qty};
+        displayTable.push(block);
       });
+      console.table(displayTable);
+      lowMenu();
     });
-    lowMenu();
-    //prompt actions like restock or discontinue the item
+    
   }
   function lowMenu(){
     inquirer.prompt([
@@ -94,6 +103,7 @@ const connection = sql.createConnection({
         }
         default:{
           lowMenu();
+          break;
         }
       }
     })
@@ -142,7 +152,8 @@ const connection = sql.createConnection({
       let sqlString = `INSERT INTO products (product_name, department_name, price, stock_qty) VALUES (?,?,?,?)`;
       connection.query(sqlString,data,(er,add)=>{
         if(er) throw er;
-        console.log(`added ${data[0]} under ${data[1]}`);
+        console.log('item added!');
+        console.table([{PRODUCT_NAME: data[0], DEPARTMENT_NAME: data[1], PRICE: data[2], STOCK_QUANTITY: data[3]}]);
         console.log('retunring to main menu');
         main();
 
@@ -211,6 +222,7 @@ const connection = sql.createConnection({
         }
         default:{
           main();
+          break;
         }
       }
 

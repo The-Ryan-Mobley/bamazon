@@ -19,7 +19,7 @@ const connection = sql.createConnection({
   function welcomeList(){
     connection.query('SELECT * FROM products', (error, results)=> {
         if (error) throw error;
-        console.log('PRODUCTS LIST: \n');
+        
         let displayArr = []; //holds data for each item and displays it as a unified table
         results.forEach((index)=>{
           var block = { PRODUCTID: index.id, PRODUCTNAME: index.product_name,PRICE: index.price };
@@ -44,14 +44,8 @@ const connection = sql.createConnection({
         let DBquery =re.item;
         connection.query(`SELECT id, product_name, price, department_name FROM products WHERE id = ?`,DBquery, (error, results)=> {
         if (error) throw error;
-        console.log(results);
-        results.forEach((index)=>{
-          console.log(index);
+        console.table([{PRODUCTID: results[0].id,PRODUCTNAME:results[0].product_name,PRICE: results[0].price}]);
 
-        });
-        // let resId = JSON.stringify(results[0]);
-        // let resPrice = JSON.stringify(results[2]);
-        // let resDep = JSON.stringify(results[3]);
         let passData = JSON.stringify(results);
         buyPrompt(passData);
        
@@ -62,12 +56,8 @@ const connection = sql.createConnection({
       }
 
     });
-    //.then(()=>{
-    //  connection.end();
-    //})
   }
   function buyPrompt(productData){
-    console.log(productData);
     inquirer.prompt([
       {
         type:'confirm',
@@ -121,7 +111,7 @@ const connection = sql.createConnection({
         name:'cs'
       }
     ]).then((re)=>{
-      if(re){
+      if(re.cs){
         welcomeList();
       }
       else{
@@ -148,7 +138,7 @@ const connection = sql.createConnection({
           welcomeList();
           break;
         }
-        case 'quit':{
+        case 'Quit':{
           quitOp();
           break;
         }
