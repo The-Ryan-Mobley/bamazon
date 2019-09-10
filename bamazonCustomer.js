@@ -12,25 +12,7 @@ const connection = sql.createConnection({
   });
    
   connection.connect();
-  function opening(){
-    console.log('Welcome to Bamazon!');
-    inquirer.prompt([
-      {
-        type:'list',
-        message: 'What do you want to do?',
-        choices:['Browse Inventory','Quit'],
-        name:'choice'
-      }
-    ]).then((re)=>{
-      if(re.choice === 'Browse Inventory'){
-        welcomeList();
-      }else{
-        quitOp();
-      }
-
-    });
-
-  }
+  
 
    
 
@@ -38,14 +20,14 @@ const connection = sql.createConnection({
     connection.query('SELECT * FROM products', (error, results)=> {
         if (error) throw error;
         console.log('PRODUCTS LIST: \n');
-
+        let displayArr = []; //holds data for each item and displays it as a unified table
         results.forEach((index)=>{
-          console.log(`PRODUCT ID: ${index.id}  PRODUCT NAME: ${index.product_name} PRICE: ${index.price}`);
-          
+          var block = { PRODUCTID: index.id, PRODUCTNAME: index.product_name,PRICE: index.price };
+          displayArr.push(block);
         });
+        console.table(displayArr);
         
-        //pass products into pormpt search so you can use the list to purchase items
-        promptSearch();
+        promptSearch();//user input begins here
       });
   }
   function promptSearch(){
@@ -53,12 +35,14 @@ const connection = sql.createConnection({
       {
         type:'numeric',
         message:'enter the id of the item you want to buy',
+        default:0,
         name:'item'
       }
 
     ]).then((re)=>{
-      let DBquery =re.item;
-      connection.query(`SELECT id, product_name, price, department_name FROM products WHERE id = ?`,DBquery, (error, results)=> {
+      if(re.item != 0){
+        let DBquery =re.item;
+        connection.query(`SELECT id, product_name, price, department_name FROM products WHERE id = ?`,DBquery, (error, results)=> {
         if (error) throw error;
         console.log(results);
         results.forEach((index)=>{
@@ -71,6 +55,10 @@ const connection = sql.createConnection({
         buyPrompt(resId,resPrice,resDep);
        
       });
+      }
+      else{
+        promptSearch();
+      }
 
     });
     //.then(()=>{
@@ -128,7 +116,35 @@ const connection = sql.createConnection({
     console.log('goodbye!');
     connection.end();
   }
+  function main(){
+    console.log('Welcome to Bamazon!');
+    inquirer.prompt([
+      {
+        type:'list',
+        message: 'What do you want to do?',
+        choices:['Browse Inventory','Quit'],
+        name:'choice'
+      }
+    ]).then((re)=>{
+      switch(re.choice){
+        case 'Browse Inventory':{
+          welcomeList();
+          break;
+        }
+        case 'quit':{
+          quitOp();
+          break;
+        }
+        default:{
+          main();
+          break;
+        }
+      }
+
+    });
+
+  }
 
 
 
-opening();
+main();
