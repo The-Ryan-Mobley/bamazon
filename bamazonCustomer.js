@@ -49,10 +49,11 @@ const connection = sql.createConnection({
           console.log(index);
 
         });
-        let resId = JSON.stringify(results[0]);
-        let resPrice = JSON.stringify(results[2]);
-        let resDep = JSON.stringify(results[3]);
-        buyPrompt(resId,resPrice,resDep);
+        // let resId = JSON.stringify(results[0]);
+        // let resPrice = JSON.stringify(results[2]);
+        // let resDep = JSON.stringify(results[3]);
+        let passData = JSON.stringify(results);
+        buyPrompt(passData);
        
       });
       }
@@ -65,7 +66,8 @@ const connection = sql.createConnection({
     //  connection.end();
     //})
   }
-  function buyPrompt(reID,rePrice,reDep){
+  function buyPrompt(productData){
+    console.log(productData);
     inquirer.prompt([
       {
         type:'confirm',
@@ -79,9 +81,7 @@ const connection = sql.createConnection({
       }
     ]).then((re)=>{
       if(re.boo === true){
-        console.log(reID);
-        Purchase(reID,reDep,re.num,rePrice);
-        
+        Purchase(re.num,productData);
 
       }else{
         promptSearch();
@@ -90,27 +90,44 @@ const connection = sql.createConnection({
     });
   }
  
-  function Purchase(prodID,prodDep,prodPrice,numeric){ //log the varibles out
-    let itemObj = JSON.parse(prodID);
-    //needs to UPDATE database //take value from initial search query and mod it based on that
-    console.log(itemObj.id);
-    connection.query(`UPDATE products SET stock_qty = stock_qty - ? WHERE id =?`,[numeric,itemObj.id],(err,results)=>{
+  function Purchase(qtyNumber,passData){ //log the varibles out
+    let productInfo = JSON.parse(passData);
+  
+    connection.query(`UPDATE products SET stock_qty = stock_qty - ? WHERE id =?`,[qtyNumber,productInfo[0].id],(err,results)=>{
       if(err) throw err;
-      console.log('oh yeah its all coming together' + JSON.stringify(results));
-      updateSales(prodDep,prodPrice,numeric);
-      connection.end();
-
+      console.log(`Thank you! you're order has been succesfully sent to our warehouse for processing!`);
+      updateSales(qtyNumber,passData);
 
     });
   }
-  function updateSales(dept,cost,qty){
-    let combinedTotal = cost * qty;
+  function updateSales(qty,passData){
+    let productInfo = JSON.parse(passData);
+
+    let combinedTotal = productInfo[0].price * qty;
 
     let sqlString = `UPDATE departments SET product_sales = product_Sales + ? WHERE department_name = ?`;
-    connection.query(sqlString,[combinedTotal,dept],(er,up)=>{
+    connection.query(sqlString,[combinedTotal,productInfo[0].department_name],(err,up)=>{
       if(err) throw err;
+      console.log(`You're order has been accepted!`);
+      afterSalePrompt();
 
     });
+  }
+  function afterSalePrompt(){
+    inquirer.prompt([
+      {
+        type:'confirm',
+        message:'Continue Shopping?: ',
+        name:'cs'
+      }
+    ]).then((re)=>{
+      if(re){
+        welcomeList();
+      }
+      else{
+        main();
+      }
+    })
   }
   function quitOp(){
     console.log('goodbye!');
