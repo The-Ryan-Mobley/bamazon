@@ -18,24 +18,61 @@ function addDept(){
     inquirer.prompt([
         {
             type:'input',
-            message:'enter dept name and overhead cost',
+            message:'enter dept name and overhead cost seperated by commas with no spaces EX(x,y)',
             name:'info'
         }
     ]).then((re)=>{
         let data = re.info.split(',');
-        let sqlstring = `INSERT INTO departments (department_name, overhead_cost) VALUES (?,?)`;
-        connection.query(sqlstring,data,(err,addition)=>{
+        let sqlstring = `INSERT INTO departments (department_name, overhead_cost, product_sales) VALUES (?,?,0.00)`;
+        connection.query(sqlstring,data,(err)=>{
             if(err) throw err;
             console.log('department added');
         })
 
     });
 }
+function removeDept(){
+    inquirer.prompt([
+        {
+            type:'numeric',
+            message:'Enter the id of the department you want to remove',
+            name:'did'
+        }
+    ]).then((re)=>{
+        removeWarning(re.did);
+    });
+}
+function removeWarning(RemoveId){
+    inquirer.prompt([
+        {
+            type:'confirm',
+            message:'WARNING! This will remove the department from the system are you sure?',
+            default:false,
+            name:'warned'
+        }
+    ]).then((re)=>{
+        if(re.warned === true){
+            departmentRemoval(RemoveId);
+        }
+        else{
+            console.log('returning to main menu');
+            main();
+        }
+    })
+}
+function departmentRemoval(RemoveId){
+    connection.query(`DELETE FROM products WHERE id = ?`,RemoveId,(er)=>{
+        if(er) throw er;
+        console.log('department removed returning to main menu');
+        main();
+
+      });
+
+}
 function salesByDept(){
-    /*`SELECT songs.title, songs.artist, albums.title, albums.release_year 
-    from songs CROSS JOIN albums WHERE songs.artist = albums.artist ORDER BY albums.title ASC`*/
     let sqlString = `SELECT * FROM departments`;
     connection.query(sqlString,(er,results)=>{
+        if(er) throw er;
         let dataTable = [];
         results.forEach(index =>{
             let profit = index.product_sales - index.overhead_cost;
@@ -43,6 +80,68 @@ function salesByDept(){
             dataTable.push(block);
         })
         console.table(dataTable);
+        salesMenu();
     })
 }
-salesByDept();
+function salesMenu(){
+    inquirer.prompt([
+        {
+            type:'list',
+            message:'Options',
+            choices: ['Add a Department','Remove a Department','Back'],
+            name:'menu'
+        }
+    ]).then((re)=>{
+        switch(re.menu){
+            case 'Add a Department':{
+                addDept();
+                break;
+            }
+            case 'Remove a Department':{
+                removeDept();
+                break;
+            }
+            case 'Back':{
+                main();
+                break;
+            }
+            default:{
+                salesMenu();
+                break;
+            }
+        }
+
+    });
+}
+function quit(){
+    console.log('goodbye!');
+    connection.end();
+  }
+function main(){
+    console.log('Welcome to the Bamazon Supervisor Client!');
+    inquirer.prompt([
+        {
+            type:'list',
+            message:'Main Menu:',
+            choices:['View Sales by Department','Add a Department','Quit'],
+            name:'menu'
+        }
+    ]).then((re)=>{
+        switch(re.menu){
+            case 'View Sales by Department':{
+                salesByDept();
+                break;
+            }
+            case 'Add a Department':{
+                addDept();
+                break;
+            }
+            case 'Quit':{
+                quit();
+                break;
+            }
+        }
+
+    });
+}
+main();

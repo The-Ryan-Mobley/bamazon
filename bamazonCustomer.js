@@ -96,7 +96,7 @@ const connection = sql.createConnection({
     let combinedTotal = productInfo[0].price * qty;
 
     let sqlString = `UPDATE departments SET product_sales = product_Sales + ? WHERE department_name = ?`;
-    connection.query(sqlString,[combinedTotal,productInfo[0].department_name],(err,up)=>{
+    connection.query(sqlString,[combinedTotal,productInfo[0].department_name],(err)=>{
       if(err) throw err;
       console.log(`You're order has been accepted!`);
       afterSalePrompt();
