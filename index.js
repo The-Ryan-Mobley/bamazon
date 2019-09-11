@@ -23,6 +23,15 @@ let sha512 = (password, salt)=>{
       passwordHash:value
   };
 };
+customer.prototype.logout = function(){ //not very DRY but helps keep the program looping smoothly
+  BamazonMain();
+}
+manager.prototype.logout = function(){
+  BamazonMain();
+}
+supervisor.prototype.logout = function(){
+  BamazonMain();
+}
 
 
 function Login(){
@@ -57,19 +66,24 @@ function Login(){
 function landing(credentials){
   switch(credentials){
     case 'supervisor':{
-      supervisor.main();
+      let user = new supervisor();
+      user.main();
       break;
     }
     case 'manager':{
-      manager.main();
+      let user = new manager();
+      user.main();
       break;
     }
     case 'customer':{
-      customer.main();
+      let user = new customer();
+      user.main();
+      break;
     }
     default:{
       console.log('something went wrong returning to menu');
       BamazonMain();
+      break;
     }
   }
 }

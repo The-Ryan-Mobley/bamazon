@@ -4,7 +4,7 @@ const sql = require('mysql');
 const connection = require('./db.js');
 
 
-function customerSuite() {
+module.exports = function customerSuite() {
   this.welcomeList = ()=> {
     connection.query('SELECT * FROM products WHERE stock_qty > 0', (error, results) => {
       if (error) throw error;
@@ -121,17 +121,12 @@ function customerSuite() {
     });
   }
 
-  this.quitOp = ()=> {
-    console.log('goodbye!');
-    connection.end();
-  }
-
   this.main = () => {
     console.log('Welcome to Bamazon!');
     inquirer.prompt([{
       type: 'list',
       message: 'What do you want to do?',
-      choices: ['Browse Inventory', 'Quit'],
+      choices: ['Browse Inventory', 'Logout'],
       name: 'choice'
     }]).then((re) => {
       switch (re.choice) {
@@ -139,8 +134,8 @@ function customerSuite() {
           this.welcomeList();
           break;
         }
-        case 'Quit': {
-          this.quitOp();
+        case 'Logout': {
+          this.logout();
           break;
         }
         default: {
@@ -154,4 +149,3 @@ function customerSuite() {
   }
 
 }
-module.exports = new customerSuite();

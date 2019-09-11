@@ -3,7 +3,7 @@ const inquirer = require('inquirer');
 //const sql = require('mysql');
 const connection = require('./db.js');
 
-function superSuite() {
+module.exports = function superSuite() {
     this.addDept = ()=> {
         inquirer.prompt([{
             type: 'input',
@@ -105,17 +105,12 @@ function superSuite() {
         });
     }
 
-    this.quit = ()=> {
-        console.log('goodbye!');
-        connection.end();
-    }
-
     this.main = ()=> {
         console.log('Welcome to the Bamazon Supervisor Client!');
         inquirer.prompt([{
             type: 'list',
             message: 'Main Menu:',
-            choices: ['View Sales by Department', 'Add a Department', 'Quit'],
+            choices: ['View Sales by Department', 'Add a Department', 'Logout'],
             name: 'menu'
         }]).then((re) => {
             switch (re.menu) {
@@ -127,8 +122,12 @@ function superSuite() {
                     this.addDept();
                     break;
                 }
-                case 'Quit': {
-                    this.quit();
+                case 'Logout': {
+                    this.logout();
+                    break;
+                }
+                default:{
+                    this.main();
                     break;
                 }
             }
@@ -136,4 +135,4 @@ function superSuite() {
         });
     }
 }
-module.exports = new superSuite();
+//module.exports = new superSuite();

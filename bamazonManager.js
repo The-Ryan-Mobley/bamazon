@@ -4,7 +4,7 @@ const inquirer = require('inquirer');
 const connection = require('./db.js');
 
 
-function managerSuite() {
+module.exports = function managerSuite() {
   this.viewCatalogue = ()=> {
     connection.query(`SELECT * FROM products`, (err, re) => {
       if (err) throw er;
@@ -193,16 +193,11 @@ function managerSuite() {
     })
   }
 
-  this.quit = ()=> {
-    console.log('goodbye!');
-    connection.end();
-  }
-
   this.main = ()=> {
     inquirer.prompt([{
       type: 'list',
       message: 'Welcome to the Bamazon Management Client',
-      choices: ['View Products', 'View low/oos Products', 'quit'],
+      choices: ['View Products', 'View low/oos Products', 'Logout'],
       name: 'funk'
     }]).then((re) => {
       switch (re.funk) {
@@ -214,8 +209,8 @@ function managerSuite() {
           this.viewLows();
           break;
         }
-        case 'quit': {
-          this.quit();
+        case 'Logout': {
+          this.logout();
           break;
         }
         default: {
@@ -228,4 +223,4 @@ function managerSuite() {
 
   }
 }
-module.exports = new managerSuite();
+//module.exports = new managerSuite();
