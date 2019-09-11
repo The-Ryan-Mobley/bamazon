@@ -1,9 +1,9 @@
 # bamazon
 ## Table of Contents
-  -intro
-  -bamazon customer
-  -bamazon manager
-  -bamazon Supervisor
+  1. [intro](https://github.com/The-Ryan-Mobley/bamazon/blob/master/README.md#intro)
+  2. [bamazon customer](https://github.com/The-Ryan-Mobley/bamazon#bamazon-customer)
+  3. [bamazon manager](https://github.com/The-Ryan-Mobley/bamazon#bamazon-customer)
+  4. [bamazon Supervisor](https://github.com/The-Ryan-Mobley/bamazon#bamazon-customer)
   
 ## INTRO
   This is a class assignment that utilizes node to query and manipulate SQL databases. The program uses inquirer to create a simple console
@@ -13,9 +13,9 @@ based storefront akin to what you would find on old school PDAs. The app is laun
 
   on start the user will be prompted to either login or create an account, if you dont want to make an account i have seeded 3 dummy logins:
   
-  -username: hello password: world (supervisor)
-  -username: lorem password: ipsum (manager)
-  -username john password: doe (customer)
+  1. username: hello password: world (supervisor)
+  2. username: lorem password: ipsum (manager)
+  3. username john password: doe (customer)
   
   If the user wants the make a new account they will be promted to enter a unique username, password, and then select the kind of user they
 want to be.
@@ -25,7 +25,7 @@ want to be.
   Once the user has logged in they will be promted a menu based on their corrisponding user type.
   
 ## BAMAZON CUSTOMER
-  ![customerMain](https://drive.google.com/uc?export=view&id=1fwbnVRENSMEpJ-S3HyEfMYE0utbiz5n0/view?usp=sharing)
+  ![customerMain](https://drive.google.com/uc?export=view&id=1fwbnVRENSMEpJ-S3HyEfMYE0utbiz5n0)
   
   Customer Users can browse an inventory of items and 'purchase' them.
   ![shop](https://drive.google.com/uc?export=view&id=1r-_c6nkEsHxHWA-asNWwgrnSr3Cy9Mi-)
