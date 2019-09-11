@@ -1,17 +1,11 @@
-require('dotenv').config()
+//require('dotenv').config()
 const inquirer = require('inquirer');
-const sql = require('mysql');
-const customer = require('./bamazonCustomer.js');
-const manager = require('./bamazonManager.js');
+//const sql = require('mysql');
+//const connection = require('./db.js');
+//const customer = require('./bamazonCustomer.js');
+//const manager = require('./bamazonManager.js');
 const supervisor = require('./bamazonSupervisor.js');
 
-const connection = sql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    port     : 3306,
-    password : process.env.SQL_PW.toString(),
-    database : 'bamazon',
-  });
-   
-  connection.connect();
+//let s = new supervisor();
+supervisor.main();
 
