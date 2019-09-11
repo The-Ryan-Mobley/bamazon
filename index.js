@@ -1,7 +1,9 @@
 require('dotenv').config()
 const inquirer = require('inquirer');
 const sql = require('mysql');
-
+const customer = require('./bamazonCustomer.js');
+const manager = require('./bamazonManager.js');
+const supervisor = require('./bamazonSupervisor.js');
 
 const connection = sql.createConnection({
     host     : 'localhost',

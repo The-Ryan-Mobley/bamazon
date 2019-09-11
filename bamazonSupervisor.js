@@ -63,7 +63,7 @@ function removeWarning(RemoveId){
 function departmentRemoval(RemoveId){
     connection.query(`DELETE FROM products WHERE id = ?`,RemoveId,(er)=>{
         if(er) throw er;
-        console.log('department removed returning to main menu');
+        console.log('department removed please inform your management team for item removal \nreturning to main menu');
         main();
 
       });

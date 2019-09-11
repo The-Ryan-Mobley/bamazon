@@ -1,4 +1,4 @@
-//needs to view porducts available for sale !, low inventory !, add inventory, and add new products!
+
 //requires
 require('dotenv').config()
 const inquirer = require('inquirer');
@@ -112,11 +112,15 @@ const connection = sql.createConnection({
     inquirer.prompt([
       {
         type:'numeric',
-        message:'enter the id of the product you want to update',
+        message:'enter the id of the product you want to update, or 0 to return to pervious menu',
         name:'index'
       }
     ]).then((re)=>{
-      reStock(re.index);
+      if(re.index != 0){
+        reStock(re.index);
+      }else{
+        lowMenu();
+      }
     })
   }
   function reStock(id){
@@ -129,7 +133,7 @@ const connection = sql.createConnection({
       }
     ]).then((pro)=>{
       let data = [pro.quantity,id];
-      let queryString = `UPDATE products SET stock_qty = stock_qty - ? WHERE id= ?`
+      let queryString = `UPDATE products SET stock_qty = stock_qty + ? WHERE id= ?`
       connection.query(queryString,data,(er,addition)=>{
         if(er) throw er;
         console.log('stock updated! returning to main menu');
@@ -184,7 +188,6 @@ const connection = sql.createConnection({
           if(er) throw er;
           console.log('item removed returning to main menu');
           main();
-
         });
       }
       else{
