@@ -48,7 +48,11 @@ function Login(){
     }
   ]).then((re)=>{
     connection.query(`SELECT pass,salt,user_type FROM users WHERE user_name = ?`,re.user,(er,base)=>{
-      if(er) throw er;
+      if(er){
+        console.log('invalid username');
+        Login();
+
+      }
   
       let hashPass = readHash(re.pass,base[0].salt);
       if(base[0].pass === hashPass){
@@ -98,8 +102,11 @@ function createLogin() {
     if (re.userName.length <= 30) {
       connection.query('SELECT user_name FROM users', (er, queryResponse) => {
         if (er) throw er;
-        console.log(queryResponse);
-        if (queryResponse[0].user_name !== re.userName) {
+        let nameList =[]
+        queryResponse.forEach((index)=>{
+          nameList.push(index.user_name);
+        })
+        if (nameList.indexOf(re.userName) === -1) {
        
           createPassword(re.userName);
 

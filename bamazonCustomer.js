@@ -14,7 +14,8 @@ module.exports = function customerSuite() {
         var block = {
           PRODUCTID: index.id,
           PRODUCTNAME: index.product_name,
-          PRICE: index.price
+          PRICE: index.price,
+          IN_STOCK: index.stock_qty
         };
         displayArr.push(block);
       });
@@ -40,7 +41,8 @@ module.exports = function customerSuite() {
           console.table([{
             PRODUCTID: results[0].id,
             PRODUCTNAME: results[0].product_name,
-            PRICE: results[0].price
+            PRICE: results[0].price,
+            IN_STOCK: results[0].stock_qty
           }]);
 
           let passData = JSON.stringify(results);

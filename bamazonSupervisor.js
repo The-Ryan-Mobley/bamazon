@@ -14,7 +14,8 @@ module.exports = function superSuite() {
             let sqlstring = `INSERT INTO departments (department_name, overhead_cost, product_sales) VALUES (?,?,0.00)`;
             connection.query(sqlstring, data, (err) => {
                 if (err) throw err;
-                console.log('department added');
+                console.log('department added returning to menu');
+                this.main();
             })
 
         });
@@ -47,7 +48,7 @@ module.exports = function superSuite() {
     }
 
     this.departmentRemoval = (RemoveId)=> {
-        connection.query(`DELETE FROM products WHERE id = ?`, RemoveId, (er) => {
+        connection.query(`DELETE FROM departments WHERE department_id = ?`, RemoveId, (er) => {
             if (er) throw er;
             console.log('department removed please inform your management team for item removal \nreturning to main menu');
             this.main();
@@ -110,7 +111,7 @@ module.exports = function superSuite() {
         inquirer.prompt([{
             type: 'list',
             message: 'Main Menu:',
-            choices: ['View Sales by Department', 'Add a Department', 'Logout'],
+            choices: ['View Sales by Department', 'Add a Department', 'Remove a Department', 'Logout'],
             name: 'menu'
         }]).then((re) => {
             switch (re.menu) {
@@ -120,6 +121,10 @@ module.exports = function superSuite() {
                 }
                 case 'Add a Department':{
                     this.addDept();
+                    break;
+                }
+                case 'Remove a Department':{
+                    this.removeDept();
                     break;
                 }
                 case 'Logout': {

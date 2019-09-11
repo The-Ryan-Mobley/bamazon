@@ -28,11 +28,11 @@ module.exports = function managerSuite() {
     inquirer.prompt([{
       type: 'list',
       message: 'Options:',
-      choices: ['View lows', 'Add an Item', 'Increase Stock', 'Remove an Item', 'back'],
+      choices: ['View low/oos Products', 'Add an Item', 'Increase Stock', 'Remove an Item', 'back'],
       name: 'option'
     }]).then((re) => {
       switch (re.option) {
-        case 'View Lows': {
+        case 'View low/oos Products': {
           this.viewLows();
           break;
         }
@@ -129,20 +129,25 @@ module.exports = function managerSuite() {
       name: 'quantity'
 
     }]).then((pro) => {
-      let data = [pro.quantity, id];
-      let queryString = `UPDATE products SET stock_qty = stock_qty + ? WHERE id= ?`
-      connection.query(queryString, data, (er, addition) => {
-        if (er) throw er;
-        console.log('stock updated! returning to main menu');
-        this.main();
-      });
+      if(Math.sign(pro.quantity) === 1){
+        let data = [pro.quantity, id];
+        let queryString = `UPDATE products SET stock_qty = stock_qty + ? WHERE id= ?`
+        connection.query(queryString, data, (er, addition) => {
+          if (er) throw er;
+          console.log('stock updated! returning to main menu');
+          this.main();
+        });
+      }else{
+        console.log(`INVALID NUMBER please don't enter a negative number`);
+        reStock(id);
+      }
     });
   }
 
   this.AddProducts = ()=> {
     inquirer.prompt([{
       type: 'input',
-      message: 'enter the following seperated by commas with no spaces: \nproduct name, department name price and quantity',
+      message: 'enter the following seperated by commas with no spaces: \nproduct name, department name price and quantity (EX: x,y,z)',
       name: 'rowdata'
     }]).then((re) => {
       let data = re.rowdata.split(',');
