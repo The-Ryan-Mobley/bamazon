@@ -1,11 +1,11 @@
 require('dotenv').config()
 const inquirer = require('inquirer');
-const sql = require('mysql');
+
 const connection = require('./db.js');
 
 
 module.exports = function customerSuite() {
-  this.welcomeList = ()=> {
+  this.welcomeList = ()=> { //displays all products in a table
     connection.query('SELECT * FROM products WHERE stock_qty > 0', (error, results) => {
       if (error) throw error;
 
@@ -25,7 +25,7 @@ module.exports = function customerSuite() {
     });
   }
 
-  this.promptSearch = ()=> {
+  this.promptSearch = ()=> { //selects an item to buy based on id input by user
     inquirer.prompt([{
         type: 'numeric',
         message: 'enter the id of the item you want to buy, or zero to return to menu',
@@ -34,18 +34,18 @@ module.exports = function customerSuite() {
       }
 
     ]).then((re) => {
-      if (re.item != 0) {
+      if (re.item != 0) { //if the user inputs 0 it goes back to previous
         let DBquery = re.item;
         connection.query(`SELECT * FROM products WHERE id = ?`, DBquery, (error, results) => {
-          if (error) throw error;
-          console.table([{
+          if (error) throw error; 
+          console.table([{ //displays product info as a table
             PRODUCTID: results[0].id,
             PRODUCTNAME: results[0].product_name,
             PRICE: results[0].price,
             IN_STOCK: results[0].stock_qty
           }]);
 
-          let passData = JSON.stringify(results);
+          let passData = JSON.stringify(results); //JSON passed as a string 
           this.buyPrompt(passData);
 
         });
@@ -57,7 +57,7 @@ module.exports = function customerSuite() {
   }
 
   this.buyPrompt = (productData)=> {
-    let productInfo = JSON.parse(productData);
+    let productInfo = JSON.parse(productData); //double checks if the user wants to buy that item then prompts for qty
     inquirer.prompt([{
         type: 'confirm',
         message: 'do you want to buy this item?',
@@ -75,7 +75,7 @@ module.exports = function customerSuite() {
         } else {
           this.welcomeList();
         }
-      } else {
+      } else { //if user qty is more than actual stock qty
         console.log('Out of stock sorry about that');
         this.welcomeList();
 
@@ -85,7 +85,7 @@ module.exports = function customerSuite() {
     });
   }
 
-  this.Purchase = (qtyNumber, passData)=> { //log the varibles out
+  this.Purchase = (qtyNumber, passData)=> {  //subtracts stock
     let productInfo = JSON.parse(passData);
 
     connection.query(`UPDATE products SET stock_qty = stock_qty - ? WHERE id =?`, [qtyNumber, productInfo[0].id], (err, results) => {
@@ -96,7 +96,7 @@ module.exports = function customerSuite() {
     });
   }
 
-  this.updateSales = (qty, passData)=> {
+  this.updateSales = (qty, passData)=> { //updates department sales
     let productInfo = JSON.parse(passData);
     let combinedTotal = productInfo[0].price * qty;
     let sqlString = `UPDATE departments SET product_sales = product_Sales + ? WHERE department_name = ?`;
@@ -123,7 +123,7 @@ module.exports = function customerSuite() {
     });
   }
 
-  this.main = () => {
+  this.main = () => { //main menu for customers
     console.log('Welcome to Bamazon!');
     inquirer.prompt([{
       type: 'list',
@@ -140,7 +140,7 @@ module.exports = function customerSuite() {
           this.logout();
           break;
         }
-        default: {
+        default: { //if error
           this.main();
           break;
         }

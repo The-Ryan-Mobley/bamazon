@@ -1,14 +1,14 @@
 require('dotenv').config()
 const inquirer = require('inquirer');
 
-const connection = require('./db.js');
+const connection = require('./db.js'); //database connection 
 const customer = require('./bamazonCustomer.js');
 const manager = require('./bamazonManager.js');
 const supervisor = require('./bamazonSupervisor.js');
 
 //used for password encryption
 const crypto = require('crypto');
-//const cryptoSecret = process.env.CRYPTO_SECRET.toString();
+
 let genRandomString = (length) => { //makes the hash salt
   return crypto.randomBytes(Math.ceil(length / 2))
     .toString('hex') /** convert to hexadecimal format */
@@ -34,7 +34,7 @@ supervisor.prototype.logout = function(){
 }
 
 
-function Login(){
+function Login(){ //login menu validtes pasword based on stored password and salt in DB
   inquirer.prompt([
     {
       type:'input',
@@ -54,20 +54,20 @@ function Login(){
 
       }
   
-      let hashPass = readHash(re.pass,base[0].salt);
+      let hashPass = readHash(re.pass,base[0].salt); //checks if password matches stored values in DB
       if(base[0].pass === hashPass){
         console.log(`Welcome back ${re.user}!`);
         landing(base[0].user_type);
       }
       else{
-        console.log('invalid password');
+        console.log('invalid username password'); //calls function again if incorrect info
         Login();
       }
 
     });
   })
 }
-function landing(credentials){
+function landing(credentials){ //checks which module to call based on user type
   switch(credentials){
     case 'supervisor':{
       let user = new supervisor();
@@ -84,7 +84,7 @@ function landing(credentials){
       user.main();
       break;
     }
-    default:{
+    default:{  //incase something happens
       console.log('something went wrong returning to menu');
       BamazonMain();
       break;
@@ -92,39 +92,39 @@ function landing(credentials){
   }
 }
 
-function createLogin() {
+function createLogin() { //begins account creation with user name
   inquirer.prompt([{
     type: 'input',
     message: 'Enter your desired username under 30 characters: ',
     name: 'userName'
   }]).then((re) => {
  
-    if (re.userName.length <= 30) {
+    if (re.userName.length <= 30) {  //checks if name is right length 
       connection.query('SELECT user_name FROM users', (er, queryResponse) => {
-        if (er) throw er;
+        if (er) throw er; //checks DB to see if the username already exists
         let nameList =[]
         queryResponse.forEach((index)=>{
           nameList.push(index.user_name);
         })
         if (nameList.indexOf(re.userName) === -1) {
        
-          createPassword(re.userName);
+          createPassword(re.userName); //if its a unique username function moves to select PW
 
         } else {
           console.log('username already taken please enter a different name');
           createLogin();
         }
       })
-
     }
-
-
-
+    else{
+      console.log('user name is too long')
+      createLogin();
+    }
   })
 
 }
 
-function createPassword(userName) {
+function createPassword(userName) { //takes user password and user type, then passes it to the hashing function
   inquirer.prompt([
   {
     type: 'input',
@@ -143,7 +143,7 @@ function createPassword(userName) {
   });
 }
 
-function hashIt(string,userName,userType) {
+function hashIt(string,userName,userType) { //hashes the password then stores user values and salt in DB
     let salt = genRandomString(16); /** Gives us salt of length 16 */
     let passwordData = sha512(string, salt);
     let sqlString = `INSERT INTO users (user_name,pass,salt,user_type) VALUES (?,?,?,?)`;
@@ -154,16 +154,15 @@ function hashIt(string,userName,userType) {
       BamazonMain();
     });
 }
-function readHash(string,salt){ 
+function readHash(string,salt){ //checks if password matches hashed password in db
   let passwordData = sha512(string, salt);
   return passwordData.passwordHash;
-
 }
-function quit(){
+function quit(){ //ends program
   console.log('goodbye!');
   connection.end();
 }
-function BamazonMain(){
+function BamazonMain(){ //main menu when index is opened
   console.log('Welcome to bamazon!');
   inquirer.prompt([
     {
@@ -174,27 +173,23 @@ function BamazonMain(){
     }
   ]).then((re)=>{
     switch(re.menu){
-      case 'Login':{
+      case 'Login':{ //logs user in then moves on with the program
         Login();
         break;
-
       }
-      case 'New User':{
+      case 'New User':{ //makes a new user
         createLogin();
         break;
-
       }
-      case 'Quit':{
+      case 'Quit':{//ends program
         quit();
         break;
       }
-      default:{
+      default:{//if something goes wrong
         BamazonMain();
         break;
       }
-
     }
-
   });
 
 }

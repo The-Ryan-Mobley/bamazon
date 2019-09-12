@@ -5,7 +5,7 @@ const connection = require('./db.js');
 
 
 module.exports = function managerSuite() {
-  this.viewCatalogue = ()=> {
+  this.viewCatalogue = ()=> { //displays full list of products
     connection.query(`SELECT * FROM products`, (err, re) => {
       if (err) throw er;
       let displayTable = [];
@@ -24,7 +24,7 @@ module.exports = function managerSuite() {
     })
   }
 
-  this.catalogueMenu = ()=> {
+  this.catalogueMenu = ()=> { //menu for all actions based on products
     inquirer.prompt([{
       type: 'list',
       message: 'Options:',
@@ -52,7 +52,7 @@ module.exports = function managerSuite() {
           this.main();
           break;
         }
-        default: {
+        default: { //if error
           this.catalogueMenu();
           break;
         }
@@ -60,7 +60,7 @@ module.exports = function managerSuite() {
     })
   }
 
-  this.viewLows = ()=> {
+  this.viewLows = ()=> { //queries DB for all products with a quantity less than 100 and displays them as a table
     connection.query(`SELECT * FROM products WHERE stock_qty < 100`, (er, re) => {
       if (er) throw er;
       let displayTable = [];
@@ -80,7 +80,7 @@ module.exports = function managerSuite() {
 
   }
 
-  this.lowMenu = ()=> {
+  this.lowMenu = ()=> { //all actions for low stock products
     inquirer.prompt([{
       type: 'list',
       message: 'Options:',
@@ -108,7 +108,7 @@ module.exports = function managerSuite() {
     })
   }
 
-  this.inventoryPrompt = ()=> {
+  this.inventoryPrompt = ()=> { //selects a product based on id
     inquirer.prompt([{
       type: 'numeric',
       message: 'enter the id of the product you want to update, or 0 to return to pervious menu',
@@ -122,7 +122,7 @@ module.exports = function managerSuite() {
     })
   }
 
-  this.reStock = (id)=> {
+  this.reStock = (id)=> { //increases stock qty
     inquirer.prompt([{
       type: 'numeric',
       message: 'Enter the amount you want to add to stock',
@@ -144,7 +144,7 @@ module.exports = function managerSuite() {
     });
   }
 
-  this.AddProducts = ()=> {
+  this.AddProducts = ()=> { //adds a new products
     inquirer.prompt([{
       type: 'input',
       message: 'enter the following seperated by commas with no spaces: \nproduct name, department name price and quantity (EX: x,y,z)',
@@ -168,7 +168,7 @@ module.exports = function managerSuite() {
     });
   }
 
-  this.removePrompt = ()=> {
+  this.removePrompt = ()=> { //removes selected product
     inquirer.prompt([{
       type: 'numeric',
       message: 'Enter the id of the item you want to remove',
@@ -178,7 +178,7 @@ module.exports = function managerSuite() {
     })
   }
 
-  this.warningPrompt = (id)=> {
+  this.warningPrompt = (id)=> { //warns the user before moving forward with deletion
     inquirer.prompt([{
       type: 'confirm',
       message: 'WARNING you are about to remove this item completely are you sure?',
@@ -198,7 +198,7 @@ module.exports = function managerSuite() {
     })
   }
 
-  this.main = ()=> {
+  this.main = ()=> { //main menu for managers
     inquirer.prompt([{
       type: 'list',
       message: 'Welcome to the Bamazon Management Client',

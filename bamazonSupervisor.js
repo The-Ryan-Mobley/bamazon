@@ -1,10 +1,9 @@
 require('dotenv').config()
 const inquirer = require('inquirer');
-//const sql = require('mysql');
 const connection = require('./db.js');
 
 module.exports = function superSuite() {
-    this.addDept = ()=> {
+    this.addDept = ()=> { //adds a new department to db
         inquirer.prompt([{
             type: 'input',
             message: 'enter dept name and overhead cost seperated by commas with no spaces EX(x,y)',
@@ -21,7 +20,7 @@ module.exports = function superSuite() {
         });
     }
 
-    this.removeDept = ()=> {
+    this.removeDept = ()=> { //deletess a department from db
         inquirer.prompt([{
             type: 'numeric',
             message: 'Enter the id of the department you want to remove',
@@ -31,7 +30,7 @@ module.exports = function superSuite() {
         });
     }
 
-    this.removeWarning = (RemoveId)=> {
+    this.removeWarning = (RemoveId)=> { //warns before deletion
         inquirer.prompt([{
             type: 'confirm',
             message: 'WARNING! This will remove the department from the system are you sure?',
@@ -57,7 +56,7 @@ module.exports = function superSuite() {
 
     }
 
-    this.salesByDept = ()=> {
+    this.salesByDept = ()=> { //view departments and their sales as a table
         let sqlString = `SELECT * FROM departments`;
         connection.query(sqlString, (er, results) => {
             if (er) throw er;
@@ -77,7 +76,7 @@ module.exports = function superSuite() {
         })
     }
 
-    this.salesMenu = ()=> {
+    this.salesMenu = ()=> { //all actions with sales table
         inquirer.prompt([{
             type: 'list',
             message: 'Options',
@@ -97,7 +96,7 @@ module.exports = function superSuite() {
                     this.main();
                     break;
                 }
-                default: {
+                default: { //if error
                     this.salesMenu();
                     break;
                 }
@@ -106,7 +105,7 @@ module.exports = function superSuite() {
         });
     }
 
-    this.main = ()=> {
+    this.main = ()=> { //main menu for supervisors
         console.log('Welcome to the Bamazon Supervisor Client!');
         inquirer.prompt([{
             type: 'list',
@@ -131,13 +130,12 @@ module.exports = function superSuite() {
                     this.logout();
                     break;
                 }
-                default:{
+                default:{ //if error
                     this.main();
                     break;
                 }
             }
-
         });
     }
 }
-//module.exports = new superSuite();
+
