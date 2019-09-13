@@ -48,11 +48,11 @@ function Login(){ //login menu validtes pasword based on stored password and sal
     }
   ]).then((re)=>{
     connection.query('SELECT user_name FROM users',(er,check)=>{
-      let validation = [];
-      check.forEach((index)=>{
+      let validation = []; 
+      check.forEach((index)=>{ //validation holds all the usernames in DB 
         validation.push(index.user_name);
       });
-      if(validation.indexOf(re.user) !== -1){
+      if(validation.indexOf(re.user) !== -1){ //if user is in DB
         connection.query(`SELECT pass,salt,user_type FROM users WHERE user_name = ?`,re.user,(er,base)=>{
           if(er){
             console.log('invalid username');
@@ -65,14 +65,14 @@ function Login(){ //login menu validtes pasword based on stored password and sal
             console.log(`Welcome back ${re.user}!`);
             landing(base[0].user_type);
           }
-          else{
+          else{ //user in DB but password is does not match hash
             console.log('invalid username or password'); //calls function again if incorrect info
             Login();
           }
     
         });
       }
-      else{
+      else{ //if user is not in DB
         console.log('invalid username or password');
         Login();
       }
