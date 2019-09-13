@@ -11,7 +11,8 @@ based storefront akin to what you would find on old school PDAs. The app is laun
 
 ![start](https://drive.google.com/uc?export=view&id=1YYwbVTmqiBmKi5Q6m1FCK5TevobHXYca)
 
-  on start the user will be prompted to either login or create an account, if you dont want to make an account i have seeded 3 dummy logins:
+  on start the user will be prompted to either login or create an account, for demonstration I made these 3 logins below and added them
+  into a seed file:
   
   1. username: hello password: world (supervisor)
   2. username: lorem password: ipsum (manager)
